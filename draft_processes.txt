@@ -1,0 +1,64 @@
+Structure of the system:
+* Superbase for the free authentication process.
+* N8N webhook to take input from streamlit.
+* Response to the N8N webhook.
+* Send response to PSQL node for saving raw data.
+* Extract Job Description text from the input and convert to tabular format/vector embedding using LLM/ Minstral OCR API.
+* Extracted Format will later be stored in PSQL/VectorDB(chromaDB)
+* Make questions based on the formatted data(json/or any other format).
+* Later the Evaluation part.
+
+##Tech Stack
+*N8N
+*Streamlit
+*PSQL
+*Suparbas
+*Python
+*FastAPI(if needed further)
+*Minstral/OLLAMA
+*Docker
+
+#Required APIs
+*Minstral Voice (optional)
+*Minstal OCR (Optional)
+*Minstal Model API
+
+#Needed Libraries
+*Pandas
+*NumPy
+*Streamlit
+*dotenv
+*
+
+##Processes
+***
+--> N8N Installation using docker
+--> PSQL setup for docker
+--> Superbase setup
+--> Minstral API Integration
+
+
+#-->PSQL setup for docker
+docker run --name interview-postgres ^
+  -e POSTGRES_USER=postgres ^
+  -e POSTGRES_PASSWORD=postgres ^
+  -e POSTGRES_DB=interview_ai ^
+  -p 5432:5432 ^
+  -d postgres
+
+docker run --name interview-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=interview_ai -p 5433:5432 -d postgres
+test it by using 'docker ps'
+* docker execute interactive tty terminal where the docker image name (interview-postgres) then run psql -U postgres -d database_name
+'docker exec -it interview-postgres psql -U postgres -d interview_ai' [it will go inside the psql's indicated database]
+*Later created a table name raw_user_inputs to get input raw data from streamlit to postgres
+CREATE TABLE raw_user_inputs (
+    id SERIAL PRIMARY KEY,
+    user_id UUID NOT NULL,
+    input_type VARCHAR(50) NOT NULL,
+    raw_text TEXT NOT NULL,
+    difficulty VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    processing_status VARCHAR(30) DEFAULT 'pending'
+);
+
+*
