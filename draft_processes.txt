@@ -61,4 +61,62 @@ CREATE TABLE raw_user_inputs (
     processing_status VARCHAR(30) DEFAULT 'pending'
 );
 
-*
+* 
+docker network ls
+NETWORK ID     NAME                DRIVER    SCOPE
+a313be218844   bridge              bridge    local
+5548e4c54081   host                host      local
+ee1c64dcbb02   n8n-local_default   bridge    local
+42d6a792ac7b   none                null      local
+
+Details of issues:
+containers are not on the same usable network for the hostname we are trying to use.
+
+We have these networks:
+bridge → Docker’s default generic network
+host → host networking
+none → no networking
+n8n-local_default → a project-specific bridge network, almost certainly created by Docker Compose for our n8n-local stack
+
+What this tells:
+Our n8n-local container is very likely attached to:
+n8n-local_default
+Our interview-postgres container was likely started manually with docker run, so it is probably attached only to:
+bridge
+
+That means:
+n8n-local cannot reliably reach interview-postgres by container name
+because Docker DNS by container name works properly when containers share the same user-defined bridge network
+
+That is why we got:
+connection refused or unreachable behavior in n8n
+
+* *FIX*
+Need both containers on the same user-defined network.
+
+Since n8n-local_default already exists, the cleanest fix is:
+Attach Postgres to n8n-local_default
+
+Run:
+docker network connect n8n-local_default interview-postgres
+
+Then verify:
+docker inspect interview-postgres
+
+and
+docker inspect n8n-local
+
+should see both containers listed under n8n-local_default.
+(will connect the psql with n8n later, now will focus on the core system first).
+
+###Planned to build at least 3 workflow to get the job done.
+1. for jd data extraction and making ready for next 
+2. For questions and answers
+3. for the evaluation and feedback
+(this may change over time)
+
+1. Webhook1(post->/gather) ->> Basic LLM chain with user prompt and system prompt ->> extracted data to the respond to webhook node
+2. [It will get the response from stramlit to that /questions url]webhook2(post-> /questions) ->> Basic llm -> get questions and answers ->> filterization if needed and prepare for next node
+3. simillar format which will lead to the evaluation and feedback.
+
+##The whole streamlit draft code will be changed into a Structured project soon. so the file tree will be lot different for more readability and more component based##
