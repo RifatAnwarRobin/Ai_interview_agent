@@ -33,7 +33,7 @@ def parse_llm_response(response_json: Any) -> dict | list | None:
     else:
         item = response_json
 
-    # Already structured? (extracted JD has 'role', questions has 'questions', etc)
+    # Already structured? (extracted Job Description has 'role', questions has 'questions', etc)
     if isinstance(item, dict):
         if any(k in item for k in ("role", "company", "questions", "per_question", "overall")):
             return item

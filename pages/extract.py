@@ -13,7 +13,7 @@ page_setup(title="Extract from Job Description", icon="📝")
 
 hero(
     title="📝 Extract job description",
-    subtitle="Paste any JD from LinkedIn, Indeed, or a company site. "
+    subtitle="Paste any Job Description from LinkedIn, Indeed, or a company site. "
              "We'll extract everything that matters.",
 )
 
@@ -30,7 +30,7 @@ with col_main:
         jd_text = st.text_area(
             "Paste job description",
             height=280,
-            placeholder="Paste the full JD here — we handle messy formatting automatically.",
+            placeholder="Paste the full Job Description here — we handle messy formatting automatically.",
         )
     else:
         jd_text = st.text_input("Topic", value="Python")
@@ -122,7 +122,7 @@ if last:
             key="question_count_select",
         )
 
-    if st.button("🎤 Generate questions & start practice",
+    if st.button("Generate questions & start practice",
                  type="primary", use_container_width=True):
         st.session_state["pending_question_count"] = question_count
         st.session_state["pending_extraction_id"] = last["id"]

@@ -5,7 +5,7 @@ from services.config import config
 
 
 def extract_jd(jd_text: str, difficulty: str, input_type: str = "Job Interview") -> dict | None:
-    """Send JD text to n8n /gather, return parsed JD dict (or None on parse failure)."""
+    """Send Job Description text to n8n /gather, return parsed Job Description dict (or None on parse failure)."""
     response = post_webhook(
         endpoint="gather",
         payload={
@@ -19,7 +19,7 @@ def extract_jd(jd_text: str, difficulty: str, input_type: str = "Job Interview")
 
 
 def generate_questions(jd_data: dict, difficulty: str, count: int) -> list[dict] | None:
-    """Send JD data to n8n /questions, return list of question dicts (or None)."""
+    """Send Job Description data to n8n /questions, return list of question dicts (or None)."""
     response = post_webhook(
         endpoint="questions",
         payload={

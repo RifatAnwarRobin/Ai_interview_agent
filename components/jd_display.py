@@ -1,4 +1,4 @@
-"""Render an extracted JD in a polished layout."""
+"""Render an extracted Job Description in a polished layout."""
 import json
 import streamlit as st
 
@@ -38,7 +38,7 @@ def _as_text(value, default: str = "—") -> str:
 
 
 def render_extraction(data: dict) -> None:
-    """Display a fully-extracted JD."""
+    """Display a fully-extracted Job Description."""
     if not data:
         st.warning("No data to display.")
         return

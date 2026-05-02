@@ -10,7 +10,7 @@ page_setup(title="History", icon="📚")
 
 hero(
     title="📚 Extraction history",
-    subtitle="Every JD you've analyzed, searchable and exportable.",
+    subtitle="Every Job Description you've analyzed, searchable and exportable.",
 )
 
 extractions = st.session_state[EXTRACTIONS]
@@ -19,7 +19,7 @@ if not extractions:
     empty_state(
         icon="📭",
         message="No history yet.",
-        cta="Extract your first JD to see it here.",
+        cta="Extract your first Job Description to see it here.",
     )
     st.stop()
 

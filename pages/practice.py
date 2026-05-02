@@ -57,7 +57,7 @@ if not session:
     empty_state(
         icon="🎯",
         message="Start a practice session from the Extract page.",
-        cta="Extract a JD → click 'Generate questions & start practice' at the bottom.",
+        cta="Extract a Job Description → click 'Generate questions & start practice' at the bottom.",
     )
     st.stop()
 

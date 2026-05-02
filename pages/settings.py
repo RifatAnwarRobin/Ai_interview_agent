@@ -61,7 +61,7 @@ st.text_input(
 st.caption("Endpoints used by this app:")
 st.markdown(
     f"""
-    - `{config.WEBHOOK_BASE_URL}/gather` — JD extraction
+    - `{config.WEBHOOK_BASE_URL}/gather` — Job Description extraction
     - `{config.WEBHOOK_BASE_URL}/questions` — Question generation
     - `{config.WEBHOOK_BASE_URL}/evaluate` — Answer evaluation
     """

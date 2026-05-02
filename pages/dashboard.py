@@ -18,7 +18,7 @@ extractions = st.session_state[EXTRACTIONS]
 if not extractions:
     empty_state(
         icon="📊",
-        message="Nothing to show yet — extract a JD first.",
+        message="Nothing to show yet — extract a Job Description first.",
         cta="Open the Extract page from the sidebar.",
     )
     st.stop()
