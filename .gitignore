@@ -116,7 +116,7 @@ logs/
 
 # Ignore Streamlit cache directory
 # (This folder contains temporary files and can be regenerated)
-.streamlit/
+# .streamlit/
 
 # =============================================
 # Data Files
@@ -134,4 +134,4 @@ data/
 *.h5
 *.joblib
 *.npy
-*.md
+# *.md
