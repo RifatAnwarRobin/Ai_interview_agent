@@ -15,7 +15,7 @@ class Config:
     # REQUEST_TIMEOUT_QUESTIONS: int = int(os.getenv("REQUEST_TIMEOUT_QUESTIONS", "60"))
     # REQUEST_TIMEOUT_EVALUATE: int = int(os.getenv("REQUEST_TIMEOUT_EVALUATE", "120"))
 
-    WEBHOOK_BASE_URL: str = "http://localhost:5678/webhook"
+    WEBHOOK_BASE_URL: str = "https://aiinterview-copilot.onrender.com/webhook"
     MISTRAL_KEY: str = ""
     REQUEST_TIMEOUT_EXTRACT: int = 60
     REQUEST_TIMEOUT_QUESTIONS: int = 60
