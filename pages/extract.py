@@ -12,7 +12,7 @@ from components.jd_display import render_extraction
 page_setup(title="Extract from Job Description", icon="📝")
 
 hero(
-    title="📝 Extract job description",
+    title="📝 Extract Job Description",
     subtitle="Paste any Job Description from LinkedIn, Indeed, or a company site. "
              "We'll extract everything that matters.",
 )
