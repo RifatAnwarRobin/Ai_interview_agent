@@ -1,0 +1,33 @@
+name: Keep n8n warm
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping n8n healthcheck
+        env:
+          N8N_URL: "https://aiinterview-copilot.onrender.com"
+        run: |
+          if [ -z "$N8N_URL" ]; then
+            echo "::error::N8N_URL secret is not set"
+            exit 1
+          fi
+          echo "Pinging $N8N_URL/healthz ..."
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+                        --max-time 90 \
+                        --retry 2 \
+                        --retry-delay 30 \
+                        --retry-all-errors \
+                        "$N8N_URL/healthz")
+          echo "HTTP $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "::warning::n8n returned HTTP $STATUS instead of 200"
+            exit 1
+          fi
+          echo "n8n is awake."
