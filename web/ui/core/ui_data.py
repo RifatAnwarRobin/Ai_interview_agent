@@ -6,9 +6,9 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-WEBHOOK_URL = "http://localhost:5678/webhook-test/gather"
+WEBHOOK_URL = "http://localhost:5678/webhook-test"
 MISTRAL_KEY = os.getenv("MISTRAL_KEY")
-
+st.session_state["extracted_jd_status"] = False
 
 def welcome():
     st.header("AI Interview System")
@@ -49,11 +49,11 @@ def parse_n8n_response(response_json):
     )
 
     if not raw_text:
-        st.error("Couldn't find LLM output in the response. Check the expander above to see the actual structure.")
-        return None
+        st.info("Couldn't find LLM output in the response. Check the expander above to see the actual structure.")
+        return response_json
 
     # Strip markdown code fences and parse
-    cleaned = re.sub(r"```json|```", "", raw_text).strip()
+    cleaned = re.sub(r"```json|```", "", raw_text).strip() or response_json
     try:
         return json.loads(cleaned)
     except json.JSONDecodeError as e:
@@ -142,7 +142,9 @@ def user_input_form():
 
         with st.spinner("Extracting… this may take 10-20 seconds"):
             try:
-                response = requests.post(WEBHOOK_URL, json=user_inp, timeout=60)
+                print(f"Request sent to /gather----------->")
+                response = requests.post(f"{WEBHOOK_URL}/gather", json=user_inp, timeout=60)
+                print(f"Got response form /gather----------->")
             except requests.exceptions.RequestException as e:
                 st.error(f"Connection failed: {e}")
                 st.info("Check if n8n is running and you clicked 'Execute workflow' on the canvas.")
@@ -154,23 +156,193 @@ def user_input_form():
             return
 
         data = parse_n8n_response(response.json())
+        st.code(data)
+        print(f"Data from response: {data}")
         if data is None:
             return
+        else:
+            st.session_state["extracted_jd_status"] = True
 
         st.session_state["extracted_jd"] = data
         st.session_state["user_input"] = user_inp
         st.success("Extracted successfully!")
 
 
-def generate_questions_section():
+def generate_questions_section(jd_data):
     """Placeholder for later — uses saved extracted data."""
-    if "extracted_jd" not in st.session_state:
+    st.divider()
+    print(f"generating questions------->")
+    if jd_data==None:
+        st.error(f"Job Description extraction was not done, please retry.")
+        return
+    
+    if st.button("Generate Interview Questions"):
+        with st.spinner("Generating question… \nthis may take 10-20 seconds"):
+            try:
+                print(f"Request sent to /questions----------->")
+                question_response = requests.post(f"{WEBHOOK_URL}/questions", json=jd_data, timeout=60)
+                print(f"Got response from /questions----------->")
+            except requests.exceptions.RequestException as e:
+                st.error(f"Connection failed: {e}")
+                st.info("Check if n8n is running and you clicked 'Execute workflow' on the canvas.")
+                return
+        if question_response!=None:
+            print(f"Q Data---> {question_response.text}")
+            q_data=parse_n8n_response(question_response.json())
+            st.session_state["question_data"]=q_data
+            print(f"Q Data---> {q_data}")
+            st.success("Questions Data Generated properly ❤️")
+            st.write(q_data)
+            
+        else:
+            return
+
+def extract_questions(q_data):
+    if isinstance(q_data, list) and len(q_data) > 0:
+        q_data = q_data[0]
+
+    if isinstance(q_data, dict):
+        return q_data.get("questions", [])
+
+    return []
+
+def display_questions_section():
+    if "question_data" not in st.session_state:
         return
 
-    st.divider()
-    if st.button("Generate Interview Questions (coming next)"):
-        st.info("This will use the extracted data above to generate tailored questions.")
+    questions = extract_questions(st.session_state["question_data"])
 
+    if not questions:
+        st.warning("No questions found.")
+        return
+
+    if "answers_submitted" not in st.session_state:
+        st.session_state["answers_submitted"] = False
+
+    if "answers" not in st.session_state:
+        st.session_state["answers"] = {}
+
+    st.divider()
+    st.subheader("Interview Questions")
+
+    for i, q in enumerate(questions, start=1):
+        q_id = q.get("id", f"q{i}")
+
+        with st.container(border=True):
+            st.markdown(f"### Q{i}. {q.get('question', 'No question text')}")
+            st.caption(
+                f"Category: {q.get('category', 'N/A')} | "
+                f"Focus: {q.get('focus_area', 'N/A')} | "
+                f"Depth: {q.get('expected_depth', 'N/A')}"
+            )
+
+            answer = st.text_area(
+                "Your answer",
+                key=f"answer_{q_id}",
+                height=130,
+                disabled=st.session_state["answers_submitted"]
+            )
+
+            st.session_state["answers"][q_id] = {
+                "question_id": q_id,
+                "question": q.get("question"),
+                "category": q.get("category"),
+                "focus_area": q.get("focus_area"),
+                "expected_depth": q.get("expected_depth"),
+                "ideal_answer_points": q.get("ideal_answer_points", []),
+                "answer": answer
+            }
+
+            # Locked until submitted
+            if st.session_state["answers_submitted"]:
+                with st.expander("Ideal answer points"):
+                    for point in q.get("ideal_answer_points", []):
+                        st.markdown(f"- {point}")
+
+    if not st.session_state["answers_submitted"]:
+        if st.button("Submit Answers"):
+            answered = [
+                a for a in st.session_state["answers"].values()
+                if a["answer"].strip()
+            ]
+
+            if not answered:
+                st.error("Please answer at least one question before submitting.")
+                return
+
+            st.session_state["submitted_answers"] = answered
+            st.session_state["answers_submitted"] = True
+            st.success("Answers submitted. Ideal answer points are now unlocked.")
+            st.rerun()
+
+    else:
+        st.success("Answers are submitted and locked.")
+
+        if st.button("Show Evaluation"):
+            run_evaluation()
+
+def run_evaluation():
+    payload = {
+        "user_id": "demo_user",
+        "jd_data":st.session_state.get("extracted_jd", []),
+        "answers": st.session_state.get("submitted_answers", [])
+    }
+
+    with st.spinner("Evaluating your answers..."):
+        try:
+            evaluation_response = requests.post(f"{WEBHOOK_URL}/evaluate", json=payload, timeout=120)
+        except requests.exceptions.RequestException as e:
+            st.error(f"Evaluation request failed: {e}")
+            return
+
+    if response.status_code != 200:
+        st.error(f"Evaluation failed: {evaluation_response.status_code}")
+        st.code(evaluation_response.text)
+        return
+
+    st.session_state["evaluation_result"] = response.json()
+
+def display_evaluation_section():
+    if "evaluation_result" not in st.session_state:
+        return
+
+    result = st.session_state["evaluation_result"]
+
+    st.divider()
+    st.subheader("Evaluation Result")
+
+    if isinstance(result, list) and result:
+        result = result[0]
+
+    st.json(result)
+
+    evaluations = result.get("evaluations", [])
+    overall_score = result.get("overall_score")
+    weak_areas = result.get("weak_areas", [])
+    strength_areas = result.get("strength_areas", [])
+
+    if overall_score is not None:
+        st.metric("Overall Score", overall_score)
+
+    if weak_areas:
+        st.subheader("Weak Areas")
+        for area in weak_areas:
+            st.markdown(f"- {area}")
+
+    if strength_areas:
+        st.subheader("Strength Areas")
+        for area in strength_areas:
+            st.markdown(f"- {area}")
+
+    if evaluations:
+        st.subheader("Per Question Feedback")
+        for ev in evaluations:
+            with st.container(border=True):
+                st.markdown(f"**Question ID:** {ev.get('question_id')}")
+                st.metric("Score", ev.get("score", "N/A"))
+                st.write(ev.get("feedback", ""))
+                st.warning(f"Weak area: {ev.get('weak_area', 'N/A')}")
+                st.info(ev.get("improvement_tip", ""))
 
 def main():
     welcome()
@@ -178,8 +350,9 @@ def main():
 
     if "extracted_jd" in st.session_state:
         display_extracted_data(st.session_state["extracted_jd"])
-        generate_questions_section()
-
+        generate_questions_section(st.session_state["extracted_jd"])
+        display_questions_section()
+        display_evaluation_section()
 
 if __name__ == "__main__":
     main()
