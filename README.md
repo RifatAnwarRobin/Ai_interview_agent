@@ -1,4 +1,4 @@
-# Interview Copilot
+# Interview Copilot(AI Interview Agent)
 
 Modular Streamlit app for AI-powered interview prep. Extract JDs, practice tailored questions, get AI feedback — all powered by n8n + Mistral.
 
@@ -23,7 +23,7 @@ AI_Interview_agent/
 │   └── question_card.py            # render_question_card / render_question_review
 │
 ├── pages/
-│   ├── extract.py             # Step 1:paste JD, get structured data
+│   ├── extract.py             # Step 1:paste Job Description, get structured data
 │   ├── practice.py            # Step 2: answer questions one by one
 │   ├── results.py             # Step 3: AI evaluation + feedback
 │   ├── dashboard.py           # Aggregated stats across extractions
@@ -83,7 +83,7 @@ System prompts and JSON schemas for each should put into the Basic LLM Chain Sys
 Home → Extract → Generate questions → Practice (Q by Q) → Submit → Results → Dashboard / History
 ```
 
-[The JD data lives in Streamlit's session state for now as no database is connected and rides along with each subsequent webhook call. n8n stays stateless.]
+[The Job Description data lives in Streamlit's session state for now as no database is connected and rides along with each subsequent webhook call. n8n stays stateless.]
 
 ## How to Add new features using current template
 
@@ -110,3 +110,5 @@ Home → Extract → Generate questions → Practice (Q by Q) → Submit → Res
 - [ ] CV gap analysis vs job keywords
 - [ ] Modify existing CV based on the job description
 - [ ] Multi-session comparison views
+- [ ] Retry for the new questions
+- [ ] QnA download option with AI analysis of proper answer.
