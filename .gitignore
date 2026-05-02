@@ -126,11 +126,12 @@ logs/
 # (Data files can be large and are often regenerated or downloaded separately)
 # If you want to include sample data, add it to a `data/sample/` directory
 # and explicitly include it in Git.
-# data/
-# *.csv
-# *.json
-# *.xlsx
-# *.pkl
-# *.h5
-# *.joblib
-# *.npy
+data/
+*.csv
+*.json
+*.xlsx
+*.pkl
+*.h5
+*.joblib
+*.npy
+*.md

@@ -1,0 +1,158 @@
+/* ===== Base ===== */
+html, body, [class*="css"] {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+#MainMenu { visibility: hidden; }
+footer { visibility: hidden; }
+header[data-testid="stHeader"] { background: transparent; }
+
+.main .block-container {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+    max-width: 1200px;
+}
+
+section[data-testid="stSidebar"] {
+    background: #0E1117;
+    border-right: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ===== Headings ===== */
+h1, h2, h3 { letter-spacing: -0.02em; font-weight: 600; }
+h1 { font-size: 2.25rem; }
+h2 { font-size: 1.5rem; margin-top: 2rem; }
+h3 { font-size: 1.15rem; }
+
+/* ===== Hero ===== */
+.hero {
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.08));
+    border: 1px solid rgba(99,102,241,0.25);
+    margin-bottom: 2rem;
+}
+.hero h1 {
+    margin: 0 0 0.5rem 0;
+    background: linear-gradient(90deg, #A5B4FC, #C4B5FD);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.hero p { color: #9CA3AF; font-size: 1.05rem; margin: 0; }
+
+/* ===== Cards ===== */
+.card {
+    background: #151823;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: border-color 0.15s ease;
+}
+.card:hover { border-color: rgba(99,102,241,0.3); }
+.card-title {
+    font-size: 0.8rem; font-weight: 500; color: #9CA3AF;
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;
+}
+.card-value { font-size: 1.5rem; font-weight: 600; color: #E6E7EA; }
+
+/* ===== Pills ===== */
+.pill {
+    display: inline-block; padding: 0.3rem 0.75rem;
+    border-radius: 999px; background: rgba(99,102,241,0.15);
+    color: #A5B4FC; border: 1px solid rgba(99,102,241,0.3);
+    font-size: 0.82rem; font-weight: 500;
+    margin: 0.15rem 0.3rem 0.15rem 0;
+}
+.pill-green  { background: rgba(16,185,129,0.12); color: #6EE7B7; border-color: rgba(16,185,129,0.3); }
+.pill-amber  { background: rgba(245,158,11,0.12); color: #FCD34D; border-color: rgba(245,158,11,0.3); }
+.pill-rose   { background: rgba(244,63,94,0.12);  color: #FDA4AF; border-color: rgba(244,63,94,0.3); }
+.pill-gray   { background: rgba(156,163,175,0.1); color: #D1D5DB; border-color: rgba(156,163,175,0.25); }
+
+/* ===== Alerts ===== */
+div[data-testid="stAlert"] {
+    border-radius: 10px;
+    border: 1px solid rgba(99,102,241,0.25);
+    background: rgba(99,102,241,0.06);
+}
+
+/* ===== Buttons ===== */
+.stButton > button {
+    border-radius: 8px; font-weight: 500;
+    padding: 0.5rem 1.25rem; transition: all 0.15s ease;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.stButton > button[kind="primary"] {
+    background: linear-gradient(135deg, #6366F1, #8B5CF6);
+    border: none; color: white;
+}
+.stButton > button[kind="primary"]:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99,102,241,0.35);
+}
+
+/* ===== Inputs ===== */
+.stTextInput > div > div > input,
+.stTextArea > div > div > textarea,
+.stSelectbox > div > div {
+    background: #151823 !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    border-radius: 8px !important;
+}
+
+/* ===== Metric ===== */
+div[data-testid="stMetric"] {
+    background: #151823; padding: 1rem 1.25rem;
+    border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);
+}
+div[data-testid="stMetricLabel"] {
+    color: #9CA3AF !important; font-size: 0.8rem !important; font-weight: 500 !important;
+}
+div[data-testid="stMetricValue"] {
+    font-size: 1.5rem !important; font-weight: 600 !important;
+}
+
+/* ===== Expander ===== */
+div[data-testid="stExpander"] {
+    background: #151823; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ===== Code ===== */
+code {
+    background: rgba(99,102,241,0.12) !important;
+    color: #A5B4FC !important;
+    padding: 0.15rem 0.4rem !important;
+    border-radius: 4px !important;
+    font-size: 0.85rem !important;
+}
+
+/* ===== Empty state ===== */
+.empty-state {
+    text-align: center; padding: 3rem 1rem; color: #6B7280;
+}
+.empty-state-icon {
+    font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;
+}
+
+/* ===== Status dot ===== */
+.status-dot {
+    display: inline-block; width: 8px; height: 8px;
+    border-radius: 50%; margin-right: 0.5rem;
+}
+.status-dot.green { background: #10B981; box-shadow: 0 0 8px #10B981; }
+.status-dot.red   { background: #EF4444; }
+.status-dot.gray  { background: #6B7280; }
+
+/* ===== Question card ===== */
+.q-card {
+    background: #151823;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+}
+.q-card .q-meta {
+    color: #9CA3AF; font-size: 0.8rem;
+    display: flex; gap: 1rem; margin-top: 0.5rem;
+}
